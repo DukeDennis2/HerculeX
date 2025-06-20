@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Progress - HerculeX</title>
+  <link rel="stylesheet" href="/src/main/resources/templates/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>HerculeX</h1>
+    <p>Track Your Progress</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="workout.html">Add Workout</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="progress.html">Progress</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h2>Personal Records</h2>
+      <ul>
+        <li>Bench Press: 185 lbs</li>
+        <li>Squat: 225 lbs</li>
+        <li>Deadlift: 275 lbs</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Workout Volume Over Time</h2>
+      <canvas id="volumeChart" width="600" height="300"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 HerculeX Fitness Tracker</p>
+  </footer>
+
+  <script>
+    const ctx = document.getElementById('volumeChart').getContext('2d');
+    const volumeChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['June 14', 'June 16', 'June 18'],
+        datasets: [{
+          label: 'Total Volume (lbs)',
+          data: [825, 900, 1050],
+          backgroundColor: '#00ffc3',
+          borderRadius: 5
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: 'white'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

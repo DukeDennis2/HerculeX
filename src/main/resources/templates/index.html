@@ -1,30 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>HerculeX</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerculeX - Fitness Tracker</title>
+    <link rel="stylesheet" href="/src/main/resources/static/style.css"> 
+
+
 </head>
 <body>
-    
-     <header>
-    <h1>HerculeX</h1>
+    <header>
+        <h1>HerculeX</h1>
+        <p>Your Personal Fitness Tracker</p>
+    </header>
+
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Features</a>
-      <a href="#">Pricing</a>
-      <a href="#">Contact</a>
+        <ul>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/workout">Workouts</a></li>
+                <li><a href="/add-workout">Add Workout</a></li>
+                <li><a href="/progress">Progress</a></li>
+                <li><a href="/history">Workout History</a></li>
+            </ul>
+        </ul>
     </nav>
-  </header>
 
-  <section class="hero">
-    <h2>Welcome to HerculeX</h2>
-    <p>Empowering individuals and teams with powerful tools to achieve more, faster.</p>
-    <button class="cta-button">Get Started</button>
-  </section>
+    <main>
+        <section>
+            <h2>Welcome to HerculeX</h2>
+            <p>Track your workouts, monitor your progress, and achieve your fitness goals with our comprehensive fitness tracking system.</p>
+        </section>
 
-  <footer>
-    &copy; 2025 HerculeX. All rights reserved.
-  </footer>
+        <section>
+            <h3>Quick Actions</h3>
+            <ul>
+                <li><a href="workout.html">Add New Workout</a></li>
+                <li><a href="history.html">Workout History</a></li>
+                <li><a href="progress.html">Track Progress</a></li>
+            </ul>
+        </section>
 
+        <section>
+            <h3>Recent Workouts</h3>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Exercise</th>
+                        <th>Sets</th>
+                        <th>Reps</th>
+                        <th>Weight (lbs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-06-18</td>
+                        <td>Bench Press</td>
+                        <td>3</td>
+                        <td>10</td>
+                        <td>185</td>
+                    </tr>
+                    <tr>
+                        <td>2025-06-18</td>
+                        <td>Squats</td>
+                        <td>4</td>
+                        <td>8</td>
+                        <td>225</td>
+                    </tr>
+                    <tr>
+                        <td>2025-06-16</td>
+                        <td>Deadlift</td>
+                        <td>3</td>
+                        <td>5</td>
+                        <td>275</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Add New Workout</h3>
+            <form id="workoutForm">
+                <fieldset>
+                    <legend>Workout Details</legend>
+                    
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                    <br><br>
+                    
+                    <label for="exercise">Exercise:</label>
+                    <input type="text" id="exercise" name="exercise" placeholder="e.g., Bench Press" required>
+                    <br><br>
+                    
+                    <label for="sets">Sets:</label>
+                    <input type="number" id="sets" name="sets" min="1" max="20" required>
+                    <br><br>
+                    
+                    <label for="reps">Reps:</label>
+                    <input type="number" id="reps" name="reps" min="1" max="100" required>
+                    <br><br>
+                    
+                    <label for="weight">Weight (lbs):</label>
+                    <input type="number" id="weight" name="weight" min="0" step="0.5" required>
+                    <br><br>
+                    
+                    <label for="notes">Notes (optional):</label>
+                    <textarea id="notes" name="notes" rows="3" cols="50" placeholder="Any additional notes about the workout..."></textarea>
+                    <br><br>
+                    
+                    <input type="submit" value="Record Workout">
+                    <input type="reset" value="Clear Form">
+                </fieldset>
+            </form>
+
+            <div id="confirmation" style="margin-top: 1em; font-weight: bold; color: green;"></div>
+
+        </section>
+
+        <script>
+            document.getElementById("workoutForm").addEventListener("submit", function(e) {
+                e.preventDefault(); // Stop page reload
+
+                const form = e.target;
+
+                // Simple validation check
+                if (!form.checkValidity()) {
+                    alert("Please fill in all required fields.");
+                    return;
+                }
+
+                // Prepare form data to send to server
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                // Send data via fetch (AJAX POST)
+                fetch("/add-workout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => {
+                    if (res.ok) {
+                        document.getElementById("confirmation").textContent = "✅ Workout recorded!";
+                        form.reset(); // clear form
+                    } else {
+                        document.getElementById("confirmation").textContent = "❌ Failed to record workout.";
+                    }
+                })
+                .catch(() => {
+                    document.getElementById("confirmation").textContent = "❌ Error submitting form.";
+                });
+            });
+</script>
+
+        <section>
+            <h3>Workout Statistics</h3>
+            <ul>
+                <li>Total Workouts: 45</li>
+                <li>This Week: 3</li>
+                <li>This Month: 12</li>
+                <li>Personal Best Bench Press: 185 lbs</li>
+                <li>Personal Best Squat: 225 lbs</li>
+                <li>Personal Best Deadlift: 275 lbs</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 HerculeX Fitness Tracker. Built with Java.</p>
+    </footer>
 </body>
 </html>
