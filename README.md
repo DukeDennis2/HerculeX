@@ -61,3 +61,8 @@ HerculeX/
     |
     Then visit: http://localhost:8080
 
+# Pushing to github
+- git init
+- git add .
+- git commit -m "..."
+- git push -u origin main
