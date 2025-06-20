@@ -4,10 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HerculeX - Fitness Tracker</title>
-    <link rel="stylesheet" href="/src/main/resources/static/style.css"> 
+    <link rel="stylesheet" href="style.css" />
+    
+    <style>
+            * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: #58a6ff;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #8b949e;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #161b22;
+            padding: 1em;
+            margin-bottom: 2em;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+        }
+
+        nav a {
+            color: #58a6ff;
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+        }
+
+        /* Main Sections */
+        main {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        section {
+            background-color: #161b22;
+            padding: 1.5em;
+            margin-bottom: 2em;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+
+        th, td {
+            padding: 0.75em;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        thead {
+            background-color: #21262d;
+            color: #58a6ff;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.3em;
+        }
+
+        input, textarea {
+            padding: 0.7em;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            background-color: #238636;
+            border: none;
+            padding: 0.8em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2ea043;
+        }
+
+        input[type="reset"] {
+            background-color: #da3633;
+        }
+
+        input[type="reset"]:hover {
+            background-color: #f85149;
+        }
+
+        /* Confirmation message */
+        #confirmation {
+            margin-top: 1em;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 2em;
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+        </style>
 
 
+    
 </head>
+
 <body>
     <header>
         <h1>HerculeX</h1>
@@ -32,14 +186,7 @@
             <p>Track your workouts, monitor your progress, and achieve your fitness goals with our comprehensive fitness tracking system.</p>
         </section>
 
-        <section>
-            <h3>Quick Actions</h3>
-            <ul>
-                <li><a href="workout.html">Add New Workout</a></li>
-                <li><a href="history.html">Workout History</a></li>
-                <li><a href="progress.html">Track Progress</a></li>
-            </ul>
-        </section>
+        
 
         <section>
             <h3>Recent Workouts</h3>
@@ -118,44 +265,79 @@
 
         </section>
 
-        <script>
-            document.getElementById("workoutForm").addEventListener("submit", function(e) {
-                e.preventDefault(); // Stop page reload
+         <script>
+    const form = document.getElementById('workoutForm');
+    const statsList = document.getElementById('statsList');
+    const statusMsg = document.getElementById('statusMsg');
 
-                const form = e.target;
+    let workouts = [];
 
-                // Simple validation check
-                if (!form.checkValidity()) {
-                    alert("Please fill in all required fields.");
-                    return;
-                }
+    const personalBests = {
+      Bench: 0,
+      Squat: 0,
+      Deadlift: 0
+    };
 
-                // Prepare form data to send to server
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
+    function updateStats() {
+      const total = workouts.length;
+      const week = workouts.filter(w => withinLastDays(w.date, 7)).length;
+      const month = workouts.filter(w => withinLastDays(w.date, 30)).length;
 
-                // Send data via fetch (AJAX POST)
-                fetch("/add-workout", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(res => {
-                    if (res.ok) {
-                        document.getElementById("confirmation").textContent = "✅ Workout recorded!";
-                        form.reset(); // clear form
-                    } else {
-                        document.getElementById("confirmation").textContent = "❌ Failed to record workout.";
-                    }
-                })
-                .catch(() => {
-                    document.getElementById("confirmation").textContent = "❌ Error submitting form.";
-                });
-            });
-</script>
+      // Update personal bests
+      workouts.forEach(w => {
+        if (w.type.toLowerCase().includes("bench") && w.weight > personalBests.Bench) {
+          personalBests.Bench = w.weight;
+        }
+        if (w.type.toLowerCase().includes("squat") && w.weight > personalBests.Squat) {
+          personalBests.Squat = w.weight;
+        }
+        if (w.type.toLowerCase().includes("deadlift") && w.weight > personalBests.Deadlift) {
+          personalBests.Deadlift = w.weight;
+        }
+      });
 
+      statsList.innerHTML = `
+        <li>Total Workouts: ${total}</li>
+        <li>This Week: ${week}</li>
+        <li>This Month: ${month}</li>
+        <li>Personal Best Bench Press: ${personalBests.Bench} lbs</li>
+        <li>Personal Best Squat: ${personalBests.Squat} lbs</li>
+        <li>Personal Best Deadlift: ${personalBests.Deadlift} lbs</li>
+      `;
+    }
+
+    function withinLastDays(dateStr, days) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffTime = now - date;
+      return diffTime < days * 24 * 60 * 60 * 1000;
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const type = document.getElementById('type').value.trim();
+      const weight = parseInt(document.getElementById('weight').value);
+      const reps = parseInt(document.getElementById('reps').value);
+
+      if (!type || isNaN(weight) || isNaN(reps)) {
+        statusMsg.textContent = "Failed to record workout. Please fill in all fields.";
+        statusMsg.style.color = "red";
+        return;
+      }
+
+      workouts.push({
+        type,
+        weight,
+        reps,
+        date: new Date().toISOString()
+      });
+
+      statusMsg.textContent = "Workout recorded!";
+      statusMsg.style.color = "green";
+      form.reset();
+      updateStats();
+    });
+  </script>
         <section>
             <h3>Workout Statistics</h3>
             <ul>
